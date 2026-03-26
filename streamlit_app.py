@@ -1,21 +1,10 @@
 import streamlit as st
-from snowflake.snowpark import Session
+from snowflake.snowpark.context import get_active_session
 import pandas as pd
 import json
 
 st.set_page_config(layout="wide", page_title="CortexCare Clinical Intelligence")
-
-# --- NEW EXTERNAL CONNECTION LOGIC ---
-# This securely logs into Snowflake using credentials we will hide in Streamlit Cloud
-@st.cache_resource
-def init_connection():
-    return Session.builder.configs(st.secrets["snowflake"]).create()
-
-try:
-    session = init_connection()
-except Exception as e:
-    st.error(f"Could not connect to Snowflake. Check your secrets. Error: {e}")
-    st.stop()
+session = get_active_session()
 # -------------------------------------
 
 st.markdown("""
